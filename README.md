@@ -3,6 +3,8 @@
 ### 🚀 Test Your Chessboard Knowledge & Speed!
 A fast-paced memory challenge where you must quickly identify and type the correct chess square notation for a highlighted square. Get it right, and the next square appears instantly—how many can you get before time runs out?
 
+[Video of it in action](https://www.loom.com/share/cc63818aae5a447293755f6a02d5a97f)
+
 ## 🎮 Features
 - **Custom Time Limits** – Adjust the duration of the game.
 - **Board Flipping** – Play from White or Black’s perspective.
