@@ -1,9 +1,19 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 
+/**
+ * Additional adjustments for mobile:
+ *  1) Even smaller board on mobile (~15% smaller than 80%, so about 68%).
+ *  2) On Safari, typing doesn't submit. We'll add a dedicated Submit button and handle onTouchEnd.
+ *  3) For the keyboard: We'll attempt to allow letters + numbers with inputMode="text"
+ *     plus attributes to discourage autocorrect, etc.
+ *  4) Desktop must remain unchanged.
+ */
+
 const filesDefault = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const ranksDefault = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
+// We'll define variants for squares, but keep durations at 0 except for the incorrect case.
 const squareVariants = {
   base: {
     scale: 1,
@@ -35,9 +45,10 @@ export default function ChessSquareGame() {
   const [highScore, setHighScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameActive, setGameActive] = useState(false);
-  const [guesses, setGuesses] = useState([]);
+  const [guesses, setGuesses] = useState([]); // { square: string, guess: string, isCorrect: boolean }
   const [boardFlipped, setBoardFlipped] = useState(false);
   const [customTime, setCustomTime] = useState(30);
+
   // We'll track per-square blink effects: 'incorrect' | null.
   const [squareEffects, setSquareEffects] = useState({});
 
@@ -107,6 +118,7 @@ export default function ChessSquareGame() {
     }
   };
 
+  // Countdown logic
   useEffect(() => {
     if (!gameActive) return;
     if (timeLeft <= 0) {
@@ -119,6 +131,7 @@ export default function ChessSquareGame() {
     return () => clearInterval(timer);
   }, [timeLeft, gameActive]);
 
+  // Focus the input box when the game starts
   useEffect(() => {
     if (gameActive && inputRef.current) {
       inputRef.current.focus();
@@ -178,8 +191,10 @@ export default function ChessSquareGame() {
             disabled={gameActive}
           />
         </label>
+        {/* Safari fix: onTouchEnd also calls startGame */}
         <button
-          onClick={() => setBoardFlipped((prev) => !prev)}
+          onClick={startGame}
+          onTouchEnd={startGame}
           className="px-3 py-1 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-500"
           disabled={gameActive}
         >
@@ -187,7 +202,11 @@ export default function ChessSquareGame() {
         </button>
       </div>
 
-      <div className="w-full max-w-sm sm:max-w-[30rem] grid grid-cols-8 gap-1">
+      {/**
+       * On mobile: ~68% width so the board is smaller.
+       * On desktop (sm: breakpoint ~640px), revert to the old 30rem max.
+       */}
+      <div className="w-[68%] max-w-[68%] sm:w-full sm:max-w-[30rem] grid grid-cols-8 gap-1">
         {renderedRanks.map((rank, rankIndex) => (
           <React.Fragment key={rank}>
             {renderedFiles.map((file, fileIndex) => {
@@ -210,9 +229,14 @@ export default function ChessSquareGame() {
       </div>
 
       {gameActive && (
-        <div className="mt-4 space-x-2">
+        <div className="mt-4 space-x-2 flex">
           <input
             type="text"
+            inputMode="text"
+            autoCapitalize="none"
+            autoCorrect="off"
+            autoComplete="off"
+            pattern="[A-Za-z0-9]*"
             ref={inputRef}
             className="border px-2 py-1 rounded-md"
             placeholder="Enter square e.g. e4"
@@ -224,12 +248,21 @@ export default function ChessSquareGame() {
               }
             }}
           />
+          {/* We'll reintroduce a submit button for Safari. */}
+          <button
+            onClick={handleSubmitGuess}
+            onTouchEnd={handleSubmitGuess}
+            className="px-3 py-1 bg-blue-600 text-white rounded-2xl hover:bg-blue-500"
+          >
+            Submit
+          </button>
         </div>
       )}
 
       {!gameActive && (
         <button
           onClick={startGame}
+          onTouchEnd={startGame}
           className="mt-4 px-4 py-2 bg-green-600 text-white rounded-2xl hover:bg-green-500"
         >
           Start Game
