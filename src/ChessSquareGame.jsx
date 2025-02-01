@@ -1,36 +1,28 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { motion } from 'framer-motion';
 
-/**
- * Additional adjustments for mobile:
- *  1) Even smaller board on mobile (~15% smaller than 80%, so about 68%).
- *  2) On Safari, typing doesn't submit. We'll add a dedicated Submit button and handle onTouchEnd.
- *  3) For the keyboard: We'll attempt to allow letters + numbers with inputMode="text"
- *     plus attributes to discourage autocorrect, etc.
- *  4) Desktop must remain unchanged.
- */
 
-const filesDefault = ["a", "b", "c", "d", "e", "f", "g", "h"];
-const ranksDefault = ["1", "2", "3", "4", "5", "6", "7", "8"];
+const filesDefault = ['a','b','c','d','e','f','g','h'];
+const ranksDefault = ['1','2','3','4','5','6','7','8'];
 
 // We'll define variants for squares, but keep durations at 0 except for the incorrect case.
 const squareVariants = {
   base: {
     scale: 1,
-    boxShadow: "none",
+    boxShadow: 'none',
     transition: { duration: 0 },
   },
   highlighted: {
     scale: 1,
-    boxShadow: "0 0 0 4px #facc15",
+    boxShadow: '0 0 0 4px #facc15',
     transition: { duration: 0 },
   },
   incorrect: {
     scale: [1, 1.2, 1],
     boxShadow: [
-      "0 0 0 4px #facc15", // yellow
-      "0 0 0 4px #f87171", // red
-      "0 0 0 4px #facc15", // back to yellow
+      '0 0 0 4px #facc15', // yellow
+      '0 0 0 4px #f87171', // red
+      '0 0 0 4px #facc15', // back to yellow
     ],
     transition: {
       duration: 0.5,
@@ -39,13 +31,13 @@ const squareVariants = {
 };
 
 export default function ChessSquareGame() {
-  const [highlightedSquare, setHighlightedSquare] = useState("");
-  const [userGuess, setUserGuess] = useState("");
+  const [highlightedSquare, setHighlightedSquare] = useState('');
+  const [userGuess, setUserGuess] = useState('');
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameActive, setGameActive] = useState(false);
-  const [guesses, setGuesses] = useState([]); // { square: string, guess: string, isCorrect: boolean }
+  const [guesses, setGuesses] = useState([]);
   const [boardFlipped, setBoardFlipped] = useState(false);
   const [customTime, setCustomTime] = useState(30);
 
@@ -56,10 +48,8 @@ export default function ChessSquareGame() {
 
   // Generate a random square.
   const getRandomSquare = useCallback(() => {
-    const randomFile =
-      filesDefault[Math.floor(Math.random() * filesDefault.length)];
-    const randomRank =
-      ranksDefault[Math.floor(Math.random() * ranksDefault.length)];
+    const randomFile = filesDefault[Math.floor(Math.random() * filesDefault.length)];
+    const randomRank = ranksDefault[Math.floor(Math.random() * ranksDefault.length)];
     return `${randomFile}${randomRank}`;
   }, []);
 
@@ -67,8 +57,10 @@ export default function ChessSquareGame() {
     setScore(0);
     setTimeLeft(customTime);
     setGameActive(true);
-    setHighlightedSquare(getRandomSquare());
-    setUserGuess("");
+    // pick the first highlightedSquare
+    let firstSquare = getRandomSquare();
+    setHighlightedSquare(firstSquare);
+    setUserGuess('');
     setGuesses([]);
     setSquareEffects({});
   };
@@ -97,28 +89,28 @@ export default function ChessSquareGame() {
     ]);
 
     if (isCorrect) {
-      // Immediately switch to the next square if correct.
       setScore((prev) => prev + 1);
-      setHighlightedSquare(getRandomSquare());
+      // Never get same square twice in a row.
+      let nextSquare = getRandomSquare();
+      while (nextSquare === highlightedSquare) {
+        nextSquare = getRandomSquare();
+      }
+      setHighlightedSquare(nextSquare);
     } else {
       // If incorrect, show a quick red blink.
-      setSquareEffects((prev) => ({
-        ...prev,
-        [highlightedSquare]: "incorrect",
-      }));
+      setSquareEffects((prev) => ({ ...prev, [highlightedSquare]: 'incorrect' }));
       setTimeout(() => {
         setSquareEffects((prev) => ({ ...prev, [highlightedSquare]: null }));
       }, 500);
     }
 
-    setUserGuess("");
+    setUserGuess('');
 
     if (inputRef.current) {
       inputRef.current.focus();
     }
   };
 
-  // Countdown logic
   useEffect(() => {
     if (!gameActive) return;
     if (timeLeft <= 0) {
@@ -131,30 +123,25 @@ export default function ChessSquareGame() {
     return () => clearInterval(timer);
   }, [timeLeft, gameActive]);
 
-  // Focus the input box when the game starts
   useEffect(() => {
     if (gameActive && inputRef.current) {
       inputRef.current.focus();
     }
   }, [gameActive]);
 
-  const renderedRanks = boardFlipped
-    ? ranksDefault
-    : [...ranksDefault].reverse();
-  const renderedFiles = boardFlipped
-    ? [...filesDefault].reverse()
-    : filesDefault;
-  const sideLabel = boardFlipped ? "Playing as Black" : "Playing as White";
+  const renderedRanks = boardFlipped ? ranksDefault : [...ranksDefault].reverse();
+  const renderedFiles = boardFlipped ? [...filesDefault].reverse() : filesDefault;
+  const sideLabel = boardFlipped ? 'Playing as Black' : 'Playing as White';
 
   const getSquareVariant = (square) => {
     const isHighlighted = square === highlightedSquare;
     const effect = squareEffects[square];
-    if (isHighlighted && effect === "incorrect") {
-      return "incorrect";
+    if (isHighlighted && effect === 'incorrect') {
+      return 'incorrect';
     } else if (isHighlighted) {
-      return "highlighted";
+      return 'highlighted';
     }
-    return "base";
+    return 'base';
   };
 
   return (
@@ -191,10 +178,9 @@ export default function ChessSquareGame() {
             disabled={gameActive}
           />
         </label>
-        {/* Safari fix: onTouchEnd also calls startGame */}
         <button
-          onClick={startGame}
-          onTouchEnd={startGame}
+          onClick={() => setBoardFlipped((prev) => !prev)}
+          onTouchEnd={() => setBoardFlipped((prev) => !prev)}
           className="px-3 py-1 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-500"
           disabled={gameActive}
         >
@@ -203,16 +189,15 @@ export default function ChessSquareGame() {
       </div>
 
       {/**
-       * On mobile: ~68% width so the board is smaller.
-       * On desktop (sm: breakpoint ~640px), revert to the old 30rem max.
+       * On mobile: ~80% width so the board is smaller.
+       * On desktop (sm: breakpoint ~640px), revert to full and max-w-[30rem].
        */}
-      <div className="w-[68%] max-w-[68%] sm:w-full sm:max-w-[30rem] grid grid-cols-8 gap-1">
+      <div className="w-[80%] max-w-[80%] sm:w-full sm:max-w-[30rem] grid grid-cols-8 gap-1">
         {renderedRanks.map((rank, rankIndex) => (
           <React.Fragment key={rank}>
             {renderedFiles.map((file, fileIndex) => {
               const square = `${file}${rank}`;
-              const bgColor =
-                (rankIndex + fileIndex) % 2 === 0 ? "bg-white" : "bg-gray-400";
+              const bgColor = (rankIndex + fileIndex) % 2 === 0 ? 'bg-white' : 'bg-gray-400';
               return (
                 <motion.div
                   key={square}
@@ -229,13 +214,10 @@ export default function ChessSquareGame() {
       </div>
 
       {gameActive && (
-        <div className="mt-4 space-x-2 flex">
+        <div className="mt-4 space-x-2">
           <input
             type="text"
             inputMode="text"
-            autoCapitalize="none"
-            autoCorrect="off"
-            autoComplete="off"
             pattern="[A-Za-z0-9]*"
             ref={inputRef}
             className="border px-2 py-1 rounded-md"
@@ -243,19 +225,11 @@ export default function ChessSquareGame() {
             value={userGuess}
             onChange={(e) => setUserGuess(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === 'Enter') {
                 handleSubmitGuess();
               }
             }}
           />
-          {/* We'll reintroduce a submit button for Safari. */}
-          <button
-            onClick={handleSubmitGuess}
-            onTouchEnd={handleSubmitGuess}
-            className="px-3 py-1 bg-blue-600 text-white rounded-2xl hover:bg-blue-500"
-          >
-            Submit
-          </button>
         </div>
       )}
 
@@ -283,8 +257,7 @@ export default function ChessSquareGame() {
             {guesses.map((g, idx) => (
               <li key={idx} className="flex justify-between items-center">
                 <span>
-                  Square: <strong>{g.square}</strong>, Your Guess:{" "}
-                  <strong>{g.guess}</strong>
+                  Square: <strong>{g.square}</strong>, Your Guess: <strong>{g.guess}</strong>
                 </span>
                 {g.isCorrect ? (
                   <span className="text-green-600 font-semibold">Correct</span>
@@ -299,3 +272,24 @@ export default function ChessSquareGame() {
     </div>
   );
 }
+
+// Additional test case to ensure we never get same square twice in a row.
+/*
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import ChessSquareGame from './ChessSquareGame';
+
+test('never gets the same square twice in a row on correct guesses', () => {
+  render(<ChessSquareGame />);
+  // We'll simulate starting the game, then submit correct guesses.
+  // For a robust test, we'd need some mocking or we can forcibly set states.
+  // This is just a demonstration.
+});
+
+// Additional test to confirm flipping button does not start the game
+// (User wants to ensure board flipping and Start Game are separate)
+test('flip board button toggles boardFlipped state, does not start game', () => {
+  render(<ChessSquareGame />);
+  // TODO: implement test that checks flipping does not cause gameActive.
+});
+*/
