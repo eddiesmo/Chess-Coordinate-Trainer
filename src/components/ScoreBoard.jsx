@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { normalizeTime } from "../utils/timeUtils";
 
 function ScoreBoard({
   gameActive,
@@ -53,11 +54,7 @@ function ScoreBoard({
               type="number"
               value={customTime}
               onChange={(e) => setCustomTime(e.target.value)}
-              onBlur={() => {
-                if (customTime.trim() === "") {
-                  setCustomTime("30");
-                }
-              }}
+              onBlur={() => setCustomTime(normalizeTime(customTime))}
               className="border px-2 py-1 rounded-md w-20"
               min={5}
               max={600}
