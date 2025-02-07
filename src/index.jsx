@@ -1,4 +1,4 @@
-import "./App.css"; // Ensure this matches the file name
+import "./App.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
