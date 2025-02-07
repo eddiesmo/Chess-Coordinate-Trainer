@@ -201,9 +201,26 @@ export default function ChessSquareGame() {
             >
               Time Left: {timeLeft}s
             </motion.h2>
+            <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-indigo-600"
+                initial={{ width: "100%" }}
+                animate={{ width: "0%" }}
+                transition={{ 
+                  duration: timeLeft,
+                  ease: "linear"
+                }}
+              />
+            </div>
             <div className="flex items-center space-x-4">
               <p className="text-gray-600">Score: {score}</p>
-              <span className="text-gray-600">{sideLabel}</span>
+              <span className={`${
+                boardFlipped 
+                  ? "text-gray-800 font-medium" 
+                  : "text-gray-600"
+              }`}>
+                {sideLabel}
+              </span>
             </div>
           </div>
         ) : (
@@ -228,7 +245,11 @@ export default function ChessSquareGame() {
             <button
               onClick={() => setBoardFlipped((prev) => !prev)}
               onTouchEnd={() => setBoardFlipped((prev) => !prev)}
-              className="px-3 py-1 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-500"
+              className={`px-3 py-1 rounded-2xl w-40 whitespace-nowrap ${
+                boardFlipped 
+                  ? "bg-gray-800 text-gray-100 hover:bg-gray-700" 
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
               disabled={gameActive}
             >
               {sideLabel}
