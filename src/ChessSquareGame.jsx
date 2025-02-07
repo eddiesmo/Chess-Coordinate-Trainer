@@ -5,53 +5,27 @@ import GameControls from "./components/GameControls";
 import GameResults from "./components/GameResults";
 import { squareVariants } from "./constants/squareVariants";
 import { getRandomSquare } from "./utils/chessUtils";
+import { useCountdown, useGameTimer } from "./hooks/useGameTimers";
+import { useAutoFocus } from "./hooks/useAutoFocus";
 
 export default function ChessSquareGame() {
+  // State declarations
   const [highlightedSquare, setHighlightedSquare] = useState("");
   const [userGuess, setUserGuess] = useState("");
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30);
   const [gameActive, setGameActive] = useState(false);
   const [guesses, setGuesses] = useState([]);
   const [boardFlipped, setBoardFlipped] = useState(false);
   const [customTime, setCustomTime] = useState("30");
-
-  // We'll track per-square effects (e.g. "incorrect") in this object.
   const [squareEffects, setSquareEffects] = useState({});
-
-  // Whether we are still on the first square (to show continuous blinking).
   const [firstSquareBlinking, setFirstSquareBlinking] = useState(false);
-
-  // New state for countdown (null when not counting down)
-  const [countdown, setCountdown] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(Number(customTime) || 30);
 
   const inputRef = useRef(null);
   const finalScoreRef = useRef(null);
 
-  // Function that contains the actual game-start logic
-  const startActualGame = () => {
-    const time = customTime.trim() === "" ? 30 : Number(customTime);
-    if (customTime.trim() === "") {
-      setCustomTime("30");
-    }
-    setScore(0);
-    setTimeLeft(time);
-    setGameActive(true);
-    const firstSquare = getRandomSquare();
-    setHighlightedSquare(firstSquare);
-    setUserGuess("");
-    setGuesses([]);
-    setSquareEffects({});
-    setFirstSquareBlinking(true);
-  };
-
-  // Modified startGame that initiates the countdown.
-  const startGame = () => {
-    setCountdown(3);
-  };
-
-  const endGame = () => {
+  const endGame = useCallback(() => {
     setGameActive(false);
     if (score > highScore) {
       setHighScore(score);
@@ -62,7 +36,34 @@ export default function ChessSquareGame() {
         block: "center",
       });
     }, 100);
-  };
+  }, [score, highScore]);
+
+  const startActualGame = useCallback(() => {
+    const time = customTime.trim() === "" ? 30 : Number(customTime);
+    setScore(0);
+    setTimeLeft(time);
+    setGameActive(true);
+    const firstSquare = getRandomSquare();
+    setHighlightedSquare(firstSquare);
+    setUserGuess("");
+    setGuesses([]);
+    setSquareEffects({});
+    setFirstSquareBlinking(true);
+  }, [customTime]);
+
+  // Initialize countdown hook
+  const [countdown, startCountdown] = useCountdown(3);
+  
+  // Initialize game timer hook
+  useGameTimer(timeLeft, gameActive, endGame, setTimeLeft);
+  
+  // Auto focus management
+  useAutoFocus(inputRef, gameActive);
+
+  // Start game function
+  const startGame = useCallback(() => {
+    startCountdown(startActualGame);
+  }, [startCountdown, startActualGame]);
 
   const handleSubmitGuess = (submittedGuess) => {
     // Use the passed guess if available; otherwise, fall back to current state.
@@ -106,41 +107,6 @@ export default function ChessSquareGame() {
       inputRef.current.focus();
     }
   };
-
-  // Countdown effect: update each second and start the game when countdown reaches 1.
-  useEffect(() => {
-    if (countdown === null) return;
-    if (countdown > 1) {
-      const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else if (countdown === 1) {
-      const timer = setTimeout(() => {
-        startActualGame();
-        setCountdown(null);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [countdown]);
-
-  useEffect(() => {
-    if (!gameActive) return;
-    if (timeLeft <= 0) {
-      endGame();
-      return;
-    }
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [timeLeft, gameActive]);
-
-  useEffect(() => {
-    if (gameActive && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [gameActive]);
 
   const toggleBoardFlip = () => setBoardFlipped((prev) => !prev);
   const sideLabel = boardFlipped ? "Playing as Black" : "Playing as White";

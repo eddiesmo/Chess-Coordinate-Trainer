@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MobileKeypad from "./MobileKeypad";
+import { useAutoFocus } from "../hooks/useAutoFocus";
 
 function GameControls({
   gameActive,
@@ -25,12 +26,8 @@ function GameControls({
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  // In desktop mode, if a countdown is active, automatically focus the text field.
-  useEffect(() => {
-    if (!isMobile && countdown !== null && inputRef && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [countdown, isMobile, inputRef]);
+  // Replace the existing focus effect with useAutoFocus
+  useAutoFocus(inputRef, !isMobile && countdown !== null);
 
   return (
     <div className="w-full max-w-md mt-4 min-h-[120px]">
