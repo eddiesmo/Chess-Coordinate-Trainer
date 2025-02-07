@@ -5,4 +5,12 @@ export function getRandomSquare() {
   const randomFile = filesDefault[Math.floor(Math.random() * filesDefault.length)];
   const randomRank = ranksDefault[Math.floor(Math.random() * ranksDefault.length)];
   return `${randomFile}${randomRank}`;
+}
+
+export function getNewRandomSquare(currentSquare) {
+  let newSquare;
+  do {
+    newSquare = getRandomSquare();
+  } while (newSquare === currentSquare);
+  return newSquare;
 } 

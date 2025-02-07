@@ -4,9 +4,10 @@ import ChessBoard from "./components/ChessBoard";
 import GameControls from "./components/GameControls";
 import GameResults from "./components/GameResults";
 import { squareVariants } from "./constants/squareVariants";
-import { getRandomSquare, filesDefault, ranksDefault } from "./utils/chessUtils";
+import { getRandomSquare, filesDefault, ranksDefault, getNewRandomSquare } from "./utils/chessUtils";
 import { useCountdown, useGameTimer } from "./hooks/useGameTimers";
 import { useAutoFocus } from "./hooks/useAutoFocus";
+import { COUNTDOWN_OVERLAY_STYLE } from "./constants/styles";
 
 export default function ChessSquareGame() {
   // State declarations
@@ -89,11 +90,7 @@ export default function ChessSquareGame() {
       if (firstSquareBlinking) {
         setFirstSquareBlinking(false);
       }
-      let nextSquare = getRandomSquare();
-      while (nextSquare === highlightedSquare) {
-        nextSquare = getRandomSquare();
-      }
-      setHighlightedSquare(nextSquare);
+      setHighlightedSquare(getNewRandomSquare(highlightedSquare));
     } else {
       setSquareEffects((prev) => ({
         ...prev,
@@ -201,12 +198,7 @@ export default function ChessSquareGame() {
         {countdown !== null && (
           <div
             className="absolute z-10 flex items-center justify-center rounded-lg bg-white bg-opacity-60 backdrop-blur-sm"
-            style={{
-              width: "calc((100% / 8) * 2)",
-              height: "calc((100% / 8) * 2)",
-              top: "calc(50% - (100% / 8))",
-              left: "calc(50% - (100% / 8))"
-            }}
+            style={COUNTDOWN_OVERLAY_STYLE}
           >
             <div className="text-6xl font-bold text-gray-800">
               {countdown}
