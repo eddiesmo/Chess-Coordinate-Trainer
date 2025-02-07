@@ -84,14 +84,13 @@ export default function ChessSquareGame() {
 
       {/* ChessBoard with optional rank/file hints */}
       <div className="relative w-full max-w-[30rem] mx-auto">
-        <ChessBoard
-          boardFlipped={boardFlipped}
-          highlightedSquare={highlightedSquare}
-          squareEffects={squareEffects}
-          firstSquareBlinking={isFirstSquareBlinking}
-          squareVariants={squareVariants}
-          getSquareVariant={getSquareVariant}
-        />
+      <ChessBoard
+boardFlipped={boardFlipped}
+squareEffects={squareEffects}
+firstSquareBlinking={isFirstSquareBlinking}
+squareVariants={squareVariants}
+getSquareVariant={(square) => (countdown !== null ? "base" : getSquareVariant(square))}
+/>
         {showHints && (
           <>
             {/* File hints along the bottom */}
