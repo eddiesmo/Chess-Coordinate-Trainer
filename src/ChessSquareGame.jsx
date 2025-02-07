@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { motion } from "framer-motion";
 
 /**
  * Now we want the "first presented square" to blink continuously until guessed correctly.
@@ -8,26 +8,26 @@ import { motion } from 'framer-motion';
  * Once the user guesses the first square correctly, we stop the blinking.
  */
 
-const filesDefault = ['a','b','c','d','e','f','g','h'];
-const ranksDefault = ['1','2','3','4','5','6','7','8'];
+const filesDefault = ["a", "b", "c", "d", "e", "f", "g", "h"];
+const ranksDefault = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
 const squareVariants = {
   base: {
     scale: 1,
-    boxShadow: 'none',
+    boxShadow: "none",
     transition: { duration: 0 },
   },
   highlighted: {
     scale: 1,
-    boxShadow: '0 0 0 4px #facc15',
+    boxShadow: "0 0 0 4px #facc15",
     transition: { duration: 0 },
   },
   incorrect: {
     scale: [1, 1.2, 1],
     boxShadow: [
-      '0 0 0 4px #facc15', // yellow
-      '0 0 0 4px #f87171', // red
-      '0 0 0 4px #facc15', // back to yellow
+      "0 0 0 4px #facc15", // yellow
+      "0 0 0 4px #f87171", // red
+      "0 0 0 4px #facc15", // back to yellow
     ],
     transition: {
       duration: 0.5,
@@ -39,19 +39,19 @@ const squareVariants = {
     boxShadow: [
       "0 0 0 4px #facc15", // highlight ring at start
       "0 0 0 4px #fde047", // slightly brighter yellow
-      "0 0 0 4px #facc15"  // return to original yellow
+      "0 0 0 4px #facc15", // return to original yellow
     ],
     transition: {
       duration: 0.8,
       repeat: Infinity,
-      repeatType: "reverse"
-    }
+      repeatType: "reverse",
+    },
   },
 };
 
 export default function ChessSquareGame() {
-  const [highlightedSquare, setHighlightedSquare] = useState('');
-  const [userGuess, setUserGuess] = useState('');
+  const [highlightedSquare, setHighlightedSquare] = useState("");
+  const [userGuess, setUserGuess] = useState("");
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
@@ -69,8 +69,10 @@ export default function ChessSquareGame() {
   const inputRef = useRef(null);
 
   const getRandomSquare = useCallback(() => {
-    const randomFile = filesDefault[Math.floor(Math.random() * filesDefault.length)];
-    const randomRank = ranksDefault[Math.floor(Math.random() * ranksDefault.length)];
+    const randomFile =
+      filesDefault[Math.floor(Math.random() * filesDefault.length)];
+    const randomRank =
+      ranksDefault[Math.floor(Math.random() * ranksDefault.length)];
     return `${randomFile}${randomRank}`;
   }, []);
 
@@ -80,7 +82,7 @@ export default function ChessSquareGame() {
     setGameActive(true);
     let firstSquare = getRandomSquare();
     setHighlightedSquare(firstSquare);
-    setUserGuess('');
+    setUserGuess("");
     setGuesses([]);
     setSquareEffects({});
     // We'll set this to true so the first square blinks.
@@ -126,13 +128,16 @@ export default function ChessSquareGame() {
       setHighlightedSquare(nextSquare);
     } else {
       // If incorrect, show a quick red blink.
-      setSquareEffects((prev) => ({ ...prev, [highlightedSquare]: 'incorrect' }));
+      setSquareEffects((prev) => ({
+        ...prev,
+        [highlightedSquare]: "incorrect",
+      }));
       setTimeout(() => {
         setSquareEffects((prev) => ({ ...prev, [highlightedSquare]: null }));
       }, 500);
     }
 
-    setUserGuess('');
+    setUserGuess("");
 
     if (inputRef.current) {
       inputRef.current.focus();
@@ -157,40 +162,50 @@ export default function ChessSquareGame() {
     }
   }, [gameActive]);
 
-  const renderedRanks = boardFlipped ? ranksDefault : [...ranksDefault].reverse();
-  const renderedFiles = boardFlipped ? [...filesDefault].reverse() : filesDefault;
-  const sideLabel = boardFlipped ? 'Playing as Black' : 'Playing as White';
+  const renderedRanks = boardFlipped
+    ? ranksDefault
+    : [...ranksDefault].reverse();
+  const renderedFiles = boardFlipped
+    ? [...filesDefault].reverse()
+    : filesDefault;
+  const sideLabel = boardFlipped ? "Playing as Black" : "Playing as White";
 
   // Decide variant. If it's the first square and it's the highlighted one, we do 'firstBlink'.
   const getSquareVariant = (square) => {
     const isHighlighted = square === highlightedSquare;
     const effect = squareEffects[square];
 
-    if (isHighlighted && effect === 'incorrect') {
-      return 'incorrect';
+    if (isHighlighted && effect === "incorrect") {
+      return "incorrect";
     } else if (isHighlighted && firstSquareBlinking) {
-      return 'firstBlink';
+      return "firstBlink";
     } else if (isHighlighted) {
-      return 'highlighted';
+      return "highlighted";
     }
-    return 'base';
+    return "base";
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4 relative">
       <div className="mb-4 text-center">
         <h1 className="text-3xl font-bold mb-2">Chess Square Naming Game</h1>
-        <p className="text-gray-600">Test your chessboard knowledge!</p>
+        <p className="text-gray-600">
+          Identify as many squares as possible before time runs out!
+        </p>
       </div>
 
       {!gameActive && (
         <div className="max-w-md mb-4 px-2 py-2 bg-white rounded-2xl shadow">
           <h2 className="text-lg font-semibold mb-1">How to Play</h2>
-          <ul className="list-disc list-inside text-sm text-gray-700">
-            <li>Click start below. A square on the board will be highlighted.</li>
+          <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 px-1">
+            <li>
+              Click start game. A square on the board will be highlighted.
+            </li>
             <li>Type its name (e.g. e4).</li>
-            <li>If you guess correctly, you earn a point and a new square is highlighted.</li>
-            <li><strong>Goal:</strong> identify as many squares as possible before time runs out!</li>
+            <li>
+              If you guess correctly, you earn a point and a new square is
+              highlighted.
+            </li>
           </ul>
         </div>
       )}
@@ -237,7 +252,8 @@ export default function ChessSquareGame() {
           <React.Fragment key={rank}>
             {renderedFiles.map((file, fileIndex) => {
               const square = `${file}${rank}`;
-              const bgColor = (rankIndex + fileIndex) % 2 === 0 ? 'bg-white' : 'bg-gray-400';
+              const bgColor =
+                (rankIndex + fileIndex) % 2 === 0 ? "bg-white" : "bg-gray-400";
               return (
                 <motion.div
                   key={square}
@@ -265,7 +281,7 @@ export default function ChessSquareGame() {
             value={userGuess}
             onChange={(e) => setUserGuess(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 handleSubmitGuess();
               }
             }}
@@ -297,7 +313,8 @@ export default function ChessSquareGame() {
             {guesses.map((g, idx) => (
               <li key={idx} className="flex justify-between items-center">
                 <span>
-                  Square: <strong>{g.square}</strong>, Your Guess: <strong>{g.guess}</strong>
+                  Square: <strong>{g.square}</strong>, Your Guess:{" "}
+                  <strong>{g.guess}</strong>
                 </span>
                 {g.isCorrect ? (
                   <span className="text-green-600 font-semibold">Correct</span>
