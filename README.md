@@ -3,7 +3,7 @@
 ### 🚀 Test Your Chessboard Knowledge & Speed!
 A fast-paced memory challenge where you must quickly identify and type the correct chess square notation for a highlighted square. Get it right, and the next square appears instantly—how many can you get before time runs out?
 
-👉 **[Try it here!](https://chess-square-trainer.replit.app/)**
+👉 **[Try it here!](https://chess-square-trainer.eddiesmo.com/)**
 
 [Video of it in action](https://www.loom.com/share/cc63818aae5a447293755f6a02d5a97f)
 
