@@ -47,22 +47,22 @@ function ScoreBoard({
           </div>
         </div>
       ) : (
-        <div className="flex flex-col sm:flex-row items-center space-x-2">
+        <div className="flex flex-row items-center justify-center space-x-4">
           <label className="flex items-center space-x-2">
-            <span className="font-semibold">Time Limit:</span>
+            <span className="font-semibold">Time:</span>
             <input
               type="number"
               value={customTime}
               onChange={(e) => setCustomTime(e.target.value)}
               onBlur={() => setCustomTime(normalizeTime(customTime))}
-              className="border px-2 py-1 rounded-md w-20"
+              className="border px-2 py-1 rounded-md w-14"
               min={5}
               max={600}
             />
           </label>
           <button
             onClick={toggleBoardFlip}
-            className={`px-3 py-1 rounded-2xl w-40 whitespace-nowrap ${
+            className={`px-3 py-1 rounded-2xl w-36 whitespace-nowrap ${
               boardFlipped
                 ? "bg-gray-800 text-gray-100 hover:bg-gray-700"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
