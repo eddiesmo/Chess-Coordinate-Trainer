@@ -227,6 +227,7 @@ export default function ChessSquareGame() {
         score={score}
         highScore={highScore}
         hintsUsed={hintsUsed}
+        showHints={showHints}
       />
 
       {!gameActive && guesses.length > 0 && (

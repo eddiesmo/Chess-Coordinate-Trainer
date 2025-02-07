@@ -14,6 +14,7 @@ function GameControls({
   score,
   highScore,
   hintsUsed,
+  showHints,
 }) {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -87,7 +88,7 @@ function GameControls({
           ) : (
             <div className="mt-2">
               <h2 className="text-xl font-semibold">
-                Your Final Score: {score} {hintsUsed ? "(with hints)" : ""}
+                Your Final Score: {score} {showHints ? "(with hints)" : ""}
               </h2>
               <p className="text-gray-600">High Score: {highScore}</p>
             </div>
