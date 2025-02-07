@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { normalizeTime } from "../utils/timeUtils";
+import lightBulbIcon from "../assets/lightbulb_2_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg";
 
 function ScoreBoard({
   gameActive,
@@ -46,11 +47,13 @@ function ScoreBoard({
               <button
                 onClick={toggleShowHints}
                 title="Toggle Hints"
-                className="ml-2 cursor-pointer focus:outline-none"
+                className="cursor-pointer focus:outline-none"
               >
-                <span className={`text-xl ${showHints ? "text-yellow-500" : "text-gray-500"}`}>
-                  💡
-                </span>
+                <img
+                  src={lightBulbIcon}
+                  alt="Toggle Hints"
+                  className={`w-6 h-6 ${showHints ? 'opacity-100' : 'opacity-40'}`}
+                />
               </button>
             </span>
           </div>
@@ -85,9 +88,11 @@ function ScoreBoard({
               title="Toggle Hints"
               className="cursor-pointer focus:outline-none"
             >
-              <span className={`text-xl ${showHints ? "text-yellow-500" : "text-gray-500"}`}>
-                💡
-              </span>
+              <img
+                src={lightBulbIcon}
+                alt="Toggle Hints"
+                className={`w-6 h-6 ${showHints ? 'opacity-100' : 'opacity-40'}`}
+              />
             </button>
           </div>
         </div>
