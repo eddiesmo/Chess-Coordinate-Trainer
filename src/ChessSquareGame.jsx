@@ -4,7 +4,7 @@ import ChessBoard from "./components/ChessBoard";
 import GameControls from "./components/GameControls";
 import GameResults from "./components/GameResults";
 import { squareVariants } from "./constants/squareVariants";
-import { getRandomSquare } from "./utils/chessUtils";
+import { getRandomSquare, filesDefault, ranksDefault } from "./utils/chessUtils";
 import { useCountdown, useGameTimer } from "./hooks/useGameTimers";
 import { useAutoFocus } from "./hooks/useAutoFocus";
 
@@ -21,6 +21,7 @@ export default function ChessSquareGame() {
   const [squareEffects, setSquareEffects] = useState({});
   const [firstSquareBlinking, setFirstSquareBlinking] = useState(false);
   const [timeLeft, setTimeLeft] = useState(Number(customTime) || 30);
+  const [showHints, setShowHints] = useState(false);
 
   const inputRef = useRef(null);
   const finalScoreRef = useRef(null);
@@ -126,6 +127,14 @@ export default function ChessSquareGame() {
     return "base";
   };
 
+  // Calculate overlays for rank and file hints matching the board orientation.
+  const renderedFilesForOverlay = boardFlipped
+    ? [...filesDefault].reverse()
+    : filesDefault;
+  const renderedRanksForOverlay = boardFlipped
+    ? [...ranksDefault]
+    : [...ranksDefault].reverse();
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-4 relative">
       {/* Header */}
@@ -145,6 +154,8 @@ export default function ChessSquareGame() {
         customTime={customTime}
         setCustomTime={setCustomTime}
         toggleBoardFlip={toggleBoardFlip}
+        showHints={showHints}
+        toggleShowHints={() => setShowHints((prev) => !prev)}
       />
 
       {/* Wrap the ChessBoard in a relative container */}
@@ -157,6 +168,26 @@ export default function ChessSquareGame() {
           squareVariants={squareVariants}
           getSquareVariant={getSquareVariant}
         />
+        {showHints && (
+          <>
+            {/* File (column) hints along the bottom */}
+            <div className="absolute bottom-[-1rem] left-0 w-full grid grid-cols-8">
+              {renderedFilesForOverlay.map((file) => (
+                <span key={file} className="text-center text-xs text-gray-500">
+                  {file.toUpperCase()}
+                </span>
+              ))}
+            </div>
+            {/* Rank (row) hints along the left side */}
+            <div className="absolute left-[-1.25rem] top-0 w-[1.5rem] h-full grid grid-rows-8">
+              {renderedRanksForOverlay.map((rank) => (
+                <span key={rank} className="text-center text-xs text-gray-500 self-center">
+                  {rank}
+                </span>
+              ))}
+            </div>
+          </>
+        )}
         {countdown !== null && (
           <div
             className="absolute z-10 flex items-center justify-center rounded-lg bg-white bg-opacity-60 backdrop-blur-sm"

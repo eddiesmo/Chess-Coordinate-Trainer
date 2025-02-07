@@ -11,6 +11,8 @@ function ScoreBoard({
   customTime,
   setCustomTime,
   toggleBoardFlip,
+  showHints,
+  toggleShowHints,
 }) {
   return (
     <div className="mb-4 text-center min-h-[80px] flex items-center justify-center">
@@ -37,12 +39,19 @@ function ScoreBoard({
           </div>
           <div className="flex items-center space-x-4">
             <p className="text-gray-600">Score: {score}</p>
-            <span
-              className={`${
-                boardFlipped ? "text-gray-800 font-medium" : "text-gray-600"
-              }`}
-            >
-              {sideLabel}
+            <span className="flex items-center">
+              <span className={boardFlipped ? "text-gray-800 font-medium" : "text-gray-600"}>
+                {sideLabel}
+              </span>
+              <button
+                onClick={toggleShowHints}
+                title="Toggle Hints"
+                className="ml-2 cursor-pointer focus:outline-none"
+              >
+                <span className={`text-xl ${showHints ? "text-yellow-500" : "text-gray-500"}`}>
+                  💡
+                </span>
+              </button>
             </span>
           </div>
         </div>
@@ -60,16 +69,27 @@ function ScoreBoard({
               max={600}
             />
           </label>
-          <button
-            onClick={toggleBoardFlip}
-            className={`px-3 py-1 rounded-2xl w-36 whitespace-nowrap ${
-              boardFlipped
-                ? "bg-gray-800 text-gray-100 hover:bg-gray-700"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            {sideLabel}
-          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={toggleBoardFlip}
+              className={`px-3 py-1 rounded-2xl w-36 whitespace-nowrap ${
+                boardFlipped
+                  ? "bg-gray-800 text-gray-100 hover:bg-gray-700"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              {sideLabel}
+            </button>
+            <button
+              onClick={toggleShowHints}
+              title="Toggle Hints"
+              className="cursor-pointer focus:outline-none"
+            >
+              <span className={`text-xl ${showHints ? "text-yellow-500" : "text-gray-500"}`}>
+                💡
+              </span>
+            </button>
+          </div>
         </div>
       )}
     </div>
