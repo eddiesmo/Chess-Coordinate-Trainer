@@ -30,7 +30,7 @@ function ScoreBoard({
               initial={{ width: "100%" }}
               animate={{ width: "0%" }}
               transition={{
-                duration: timeLeft,
+                duration: Number(customTime),
                 ease: "linear",
               }}
             />
