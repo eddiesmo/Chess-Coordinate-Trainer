@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MobileKeypad from './MobileKeypad';
 import { useAutoFocus } from '../hooks/useAutoFocus';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 function GameControls({
   gameActive,
@@ -16,17 +17,7 @@ function GameControls({
   hintsUsed,
   showHints,
 }) {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
-    return () => window.removeEventListener('resize', checkIfMobile);
-  }, []);
+  const isMobile = useIsMobile();
 
   // Replace the existing focus effect with useAutoFocus
   useAutoFocus(inputRef, !isMobile && countdown !== null);
