@@ -67,6 +67,7 @@ export default function ChessSquareGame() {
   const [firstSquareBlinking, setFirstSquareBlinking] = useState(false);
 
   const inputRef = useRef(null);
+  const finalScoreRef = useRef(null);
 
   const getRandomSquare = useCallback(() => {
     const randomFile =
@@ -99,6 +100,12 @@ export default function ChessSquareGame() {
     if (score > highScore) {
       setHighScore(score);
     }
+    setTimeout(() => {
+      finalScoreRef.current?.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }, 100);
   };
 
   const handleSubmitGuess = () => {
@@ -337,7 +344,10 @@ export default function ChessSquareGame() {
 
       {/* Results – shown only after a game has been played */}
       {!gameActive && guesses.length > 0 && (
-        <div className="mt-2 w-full max-w-md mx-auto bg-white p-4 rounded-2xl shadow-md">
+        <div 
+          ref={finalScoreRef}
+          className="mt-2 w-full max-w-md mx-auto bg-white p-4 rounded-2xl shadow-md"
+        >
           <h3 className="text-lg font-bold mb-2">Results</h3>
           <ul className="space-y-1">
             {guesses.map((g, idx) => (
