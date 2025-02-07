@@ -55,9 +55,11 @@ export default function ChessSquareGame() {
     }, 100);
   };
 
-  const handleSubmitGuess = () => {
+  const handleSubmitGuess = (submittedGuess) => {
+    // Use the passed guess if available; otherwise, fall back to current state.
+    const guess = typeof submittedGuess === "string" ? submittedGuess : userGuess;
     if (!gameActive) return;
-    const trimmed = userGuess.trim().toLowerCase();
+    const trimmed = guess.trim().toLowerCase();
     if (!trimmed) return;
 
     const isCorrect = trimmed === highlightedSquare;
