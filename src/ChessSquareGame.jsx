@@ -80,12 +80,12 @@ export default function ChessSquareGame() {
     setScore(0);
     setTimeLeft(customTime);
     setGameActive(true);
-    let firstSquare = getRandomSquare();
+    const firstSquare = getRandomSquare();
     setHighlightedSquare(firstSquare);
     setUserGuess("");
     setGuesses([]);
     setSquareEffects({});
-    // We'll set this to true so the first square blinks.
+    // Start the first square blinking.
     setFirstSquareBlinking(true);
   };
 
@@ -102,7 +102,6 @@ export default function ChessSquareGame() {
     if (!trimmed) return;
 
     const isCorrect = trimmed === highlightedSquare;
-
     setGuesses((prev) => [
       ...prev,
       {
@@ -114,20 +113,15 @@ export default function ChessSquareGame() {
 
     if (isCorrect) {
       setScore((prev) => prev + 1);
-
-      // If we're still on the first square, and it's correct, stop blinking.
       if (firstSquareBlinking) {
         setFirstSquareBlinking(false);
       }
-
-      // Never get same square twice in a row.
       let nextSquare = getRandomSquare();
       while (nextSquare === highlightedSquare) {
         nextSquare = getRandomSquare();
       }
       setHighlightedSquare(nextSquare);
     } else {
-      // If incorrect, show a quick red blink.
       setSquareEffects((prev) => ({
         ...prev,
         [highlightedSquare]: "incorrect",
@@ -138,7 +132,6 @@ export default function ChessSquareGame() {
     }
 
     setUserGuess("");
-
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -162,15 +155,11 @@ export default function ChessSquareGame() {
     }
   }, [gameActive]);
 
-  const renderedRanks = boardFlipped
-    ? ranksDefault
-    : [...ranksDefault].reverse();
-  const renderedFiles = boardFlipped
-    ? [...filesDefault].reverse()
-    : filesDefault;
+  const renderedRanks = boardFlipped ? ranksDefault : [...ranksDefault].reverse();
+  const renderedFiles = boardFlipped ? [...filesDefault].reverse() : filesDefault;
   const sideLabel = boardFlipped ? "Playing as Black" : "Playing as White";
 
-  // Decide variant. If it's the first square and it's the highlighted one, we do 'firstBlink'.
+  // Determine which variant to use on each square.
   const getSquareVariant = (square) => {
     const isHighlighted = square === highlightedSquare;
     const effect = squareEffects[square];
@@ -186,7 +175,8 @@ export default function ChessSquareGame() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4 relative">
+    <div className="min-h-screen flex flex-col items-center bg-gray-100 p-4 relative">
+      {/* Header */}
       <div className="mb-4 text-center">
         <h1 className="text-3xl font-bold mb-2">Chess Square Naming Game</h1>
         <p className="text-gray-600">
@@ -194,22 +184,7 @@ export default function ChessSquareGame() {
         </p>
       </div>
 
-      {!gameActive && (
-        <div className="max-w-md mb-4 px-2 py-2 bg-white rounded-2xl shadow">
-          <h2 className="text-lg font-semibold mb-1">How to Play</h2>
-          <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 px-1">
-            <li>
-              Click start game. A square on the board will be highlighted.
-            </li>
-            <li>Type its name (e.g. e4).</li>
-            <li>
-              If you guess correctly, you earn a point and a new square is
-              highlighted.
-            </li>
-          </ul>
-        </div>
-      )}
-
+      {/* Scoreboard */}
       {gameActive && (
         <div className="mb-4 text-center">
           <motion.h2
@@ -224,6 +199,7 @@ export default function ChessSquareGame() {
         </div>
       )}
 
+      {/* Game settings controls */}
       <div className="flex flex-col sm:flex-row items-center space-x-2 mb-4">
         <label className="flex items-center space-x-2">
           <span className="font-semibold">Time Limit:</span>
@@ -247,13 +223,13 @@ export default function ChessSquareGame() {
         </button>
       </div>
 
+      {/* Chess board grid */}
       <div className="w-[80%] max-w-[80%] sm:w-full sm:max-w-[30rem] grid grid-cols-8 gap-1">
         {renderedRanks.map((rank, rankIndex) => (
           <React.Fragment key={rank}>
-            {renderedFiles.map((file, fileIndex) => {
+            {renderedFiles.map((file) => {
               const square = `${file}${rank}`;
-              const bgColor =
-                (rankIndex + fileIndex) % 2 === 0 ? "bg-white" : "bg-gray-400";
+              const bgColor = (rankIndex + renderedFiles.indexOf(file)) % 2 === 0 ? "bg-white" : "bg-gray-400";
               return (
                 <motion.div
                   key={square}
@@ -269,52 +245,70 @@ export default function ChessSquareGame() {
         ))}
       </div>
 
-      {gameActive && (
-        <div className="mt-4 space-x-2">
-          <input
-            type="text"
-            inputMode="text"
-            pattern="[A-Za-z0-9]*"
-            ref={inputRef}
-            className="border px-2 py-1 rounded-md"
-            placeholder="Enter square e.g. e4"
-            value={userGuess}
-            onChange={(e) => setUserGuess(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSubmitGuess();
-              }
-            }}
-          />
-        </div>
-      )}
+      {/* Bottom control area – always reserves the same space */}
+      <div className="w-full max-w-md mt-4 min-h-[120px]">
+        {gameActive ? (
+          // When a game is active, show the input field.
+          <div className="flex justify-center">
+            <input
+              type="text"
+              inputMode="text"
+              pattern="[A-Za-z0-9]*"
+              ref={inputRef}
+              className="border px-2 py-1 rounded-md"
+              placeholder="Enter square e.g. e4"
+              value={userGuess}
+              onChange={(e) => setUserGuess(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmitGuess();
+                }
+              }}
+            />
+          </div>
+        ) : (
+          // When no game is active, show the Start Game button and either "How to Play" (if no game has been played)
+          // or the final score if at least one game has been played.
+          <div className="text-center">
+            <button
+              onClick={startGame}
+              onTouchEnd={startGame}
+              className="px-4 py-2 bg-green-600 text-white rounded-2xl hover:bg-green-500"
+            >
+              Start Game
+            </button>
+            {guesses.length === 0 ? (
+              <div className="mt-4">
+                <div className="max-w-md px-2 py-2 bg-white rounded-2xl shadow">
+                  <h2 className="text-lg font-semibold mb-1">How to Play</h2>
+                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 px-1">
+                    <li>Click start game. A square on the board will be highlighted.</li>
+                    <li>Type its name (e.g. e4).</li>
+                    <li>
+                      If you guess correctly, you earn a point and a new square is highlighted.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-2">
+                <h2 className="text-xl font-semibold">Your Final Score: {score}</h2>
+                <p className="text-gray-600">High Score: {highScore}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
-      {!gameActive && (
-        <button
-          onClick={startGame}
-          onTouchEnd={startGame}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded-2xl hover:bg-green-500"
-        >
-          Start Game
-        </button>
-      )}
-
-      {!gameActive && (
-        <div className="mt-4 text-center">
-          <h2 className="text-xl font-semibold">Your Final Score: {score}</h2>
-          <p className="text-gray-600">High Score: {highScore}</p>
-        </div>
-      )}
-
+      {/* Results – shown only after a game has been played */}
       {!gameActive && guesses.length > 0 && (
-        <div className="mt-4 w-full max-w-md mx-auto bg-white p-4 rounded-2xl shadow-md">
+        <div className="mt-2 w-full max-w-md mx-auto bg-white p-4 rounded-2xl shadow-md">
           <h3 className="text-lg font-bold mb-2">Results</h3>
           <ul className="space-y-1">
             {guesses.map((g, idx) => (
               <li key={idx} className="flex justify-between items-center">
                 <span>
-                  Square: <strong>{g.square}</strong>, Your Guess:{" "}
-                  <strong>{g.guess}</strong>
+                  Square: <strong>{g.square}</strong>, Your Guess: <strong>{g.guess}</strong>
                 </span>
                 {g.isCorrect ? (
                   <span className="text-green-600 font-semibold">Correct</span>
