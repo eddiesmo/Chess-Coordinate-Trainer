@@ -25,7 +25,7 @@ function ChessBoard({
               <motion.div
                 key={square}
                 role="presentation"
-                className={`aspect-square ${bgColor} border-2 border-gray-200 rounded-2xl flex items-center justify-center text-sm font-semibold`}
+                className={`aspect-square ${bgColor} border-2 border-gray-200 rounded-lg sm:rounded-2xl flex items-center justify-center text-sm font-semibold`}
                 variants={squareVariants}
                 initial="base"
                 animate={getSquareVariant(square)}
