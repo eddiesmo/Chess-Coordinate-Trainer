@@ -1,14 +1,14 @@
-import React, { useRef, useCallback } from "react";
-import ScoreBoard from "./components/ScoreBoard";
-import ChessBoard from "./components/ChessBoard";
-import GameControls from "./components/GameControls";
-import GameResults from "./components/GameResults";
-import { squareVariants } from "./constants/squareVariants";
-import { filesDefault, ranksDefault } from "./utils/chessUtils";
-import { useChessGame } from "./hooks/useChessGame";
-import { useCountdown, useGameTimer } from "./hooks/timers";
-import { useAutoFocus } from "./hooks/useAutoFocus";
-import { COUNTDOWN_OVERLAY_STYLE } from "./constants/styles";
+import React, { useRef, useCallback } from 'react';
+import ScoreBoard from './components/ScoreBoard';
+import ChessBoard from './components/ChessBoard';
+import GameControls from './components/GameControls';
+import GameResults from './components/GameResults';
+import { squareVariants } from './constants/squareVariants';
+import { filesDefault, ranksDefault } from './utils/chessUtils';
+import { useChessGame } from './hooks/useChessGame';
+import { useCountdown, useGameTimer } from './hooks/timers';
+import { useAutoFocus } from './hooks/useAutoFocus';
+import { COUNTDOWN_OVERLAY_STYLE } from './constants/styles';
 
 export default function ChessSquareGame() {
   const {
@@ -52,12 +52,8 @@ export default function ChessSquareGame() {
   }, [startCountdown, startActualGame]);
 
   // Determine overlay hints based on board orientation
-  const renderedFilesForOverlay = boardFlipped
-    ? [...filesDefault].reverse()
-    : filesDefault;
-  const renderedRanksForOverlay = boardFlipped
-    ? [...ranksDefault]
-    : [...ranksDefault].reverse();
+  const renderedFilesForOverlay = boardFlipped ? [...filesDefault].reverse() : filesDefault;
+  const renderedRanksForOverlay = boardFlipped ? [...ranksDefault] : [...ranksDefault].reverse();
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-4 relative">
@@ -68,7 +64,7 @@ export default function ChessSquareGame() {
           How fast can you identify chess squares?
         </p>
       </div>
-      
+
       <ScoreBoard
         gameActive={gameActive}
         timeLeft={timeLeft}
@@ -84,13 +80,13 @@ export default function ChessSquareGame() {
 
       {/* ChessBoard with optional rank/file hints */}
       <div className="relative w-full max-w-[30rem] mx-auto">
-      <ChessBoard
-boardFlipped={boardFlipped}
-squareEffects={squareEffects}
-firstSquareBlinking={isFirstSquareBlinking}
-squareVariants={squareVariants}
-getSquareVariant={(square) => (countdown !== null ? "base" : getSquareVariant(square))}
-/>
+        <ChessBoard
+          boardFlipped={boardFlipped}
+          squareEffects={squareEffects}
+          firstSquareBlinking={isFirstSquareBlinking}
+          squareVariants={squareVariants}
+          getSquareVariant={(square) => (countdown !== null ? 'base' : getSquareVariant(square))}
+        />
         {showHints && (
           <>
             {/* File hints along the bottom */}
@@ -116,9 +112,7 @@ getSquareVariant={(square) => (countdown !== null ? "base" : getSquareVariant(sq
             className="absolute z-10 flex items-center justify-center rounded-lg bg-white bg-opacity-60 backdrop-blur-sm"
             style={COUNTDOWN_OVERLAY_STYLE}
           >
-            <div className="text-6xl font-bold text-gray-800">
-              {countdown}
-            </div>
+            <div className="text-6xl font-bold text-gray-800">{countdown}</div>
           </div>
         )}
       </div>

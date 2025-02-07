@@ -1,5 +1,5 @@
-import React from "react";
-import BuyMeACoffee from "./BuyMeACoffee";
+import React from 'react';
+import BuyMeACoffee from './BuyMeACoffee';
 
 function GameResults({ guesses, finalScoreRef }) {
   if (!guesses || guesses.length === 0) return null;
@@ -31,4 +31,4 @@ function GameResults({ guesses, finalScoreRef }) {
   );
 }
 
-export default GameResults; 
+export default GameResults;

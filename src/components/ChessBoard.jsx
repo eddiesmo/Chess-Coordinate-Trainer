@@ -1,6 +1,6 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { filesDefault, ranksDefault } from "../utils/chessUtils";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { filesDefault, ranksDefault } from '../utils/chessUtils';
 
 function ChessBoard({
   boardFlipped,
@@ -20,7 +20,7 @@ function ChessBoard({
           {renderedFiles.map((file) => {
             const square = `${file}${rank}`;
             const bgColor =
-              (rankIndex + renderedFiles.indexOf(file)) % 2 === 0 ? "bg-white" : "bg-gray-400";
+              (rankIndex + renderedFiles.indexOf(file)) % 2 === 0 ? 'bg-white' : 'bg-gray-400';
             return (
               <motion.div
                 key={square}
@@ -38,4 +38,4 @@ function ChessBoard({
   );
 }
 
-export default ChessBoard; 
+export default ChessBoard;

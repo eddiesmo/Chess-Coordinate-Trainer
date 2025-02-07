@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 export function useAutoFocus(ref, shouldFocus) {
   useEffect(() => {
@@ -6,4 +6,4 @@ export function useAutoFocus(ref, shouldFocus) {
       ref.current.focus();
     }
   }, [shouldFocus, ref]);
-} 
+}

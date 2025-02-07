@@ -6,7 +6,7 @@ export function useCountdown(initialCount) {
 
   useEffect(() => {
     if (count === null || !onCompleteCallback) return;
-    
+
     if (count > 1) {
       const timer = setTimeout(() => setCount(count - 1), 1000);
       return () => clearTimeout(timer);
@@ -19,10 +19,13 @@ export function useCountdown(initialCount) {
     }
   }, [count, onCompleteCallback]);
 
-  const startCountdown = useCallback((callback) => {
-    setCount(initialCount);
-    setOnCompleteCallback(() => callback);
-  }, [initialCount]);
+  const startCountdown = useCallback(
+    (callback) => {
+      setCount(initialCount);
+      setOnCompleteCallback(() => callback);
+    },
+    [initialCount]
+  );
 
   return [count, startCountdown];
 }
@@ -35,8 +38,8 @@ export function useGameTimer(initialTime, isActive, onTimeUp, setTimeLeft) {
       return;
     }
     const timer = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
+      setTimeLeft((prev) => prev - 1);
     }, 1000);
     return () => clearInterval(timer);
   }, [initialTime, isActive, onTimeUp, setTimeLeft]);
-} 
+}

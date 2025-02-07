@@ -1,5 +1,5 @@
-export const filesDefault = ["a", "b", "c", "d", "e", "f", "g", "h"];
-export const ranksDefault = ["1", "2", "3", "4", "5", "6", "7", "8"];
+export const filesDefault = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+export const ranksDefault = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
 export function getRandomSquare() {
   const randomFile = filesDefault[Math.floor(Math.random() * filesDefault.length)];
@@ -13,4 +13,4 @@ export function getNewRandomSquare(currentSquare) {
     newSquare = getRandomSquare();
   } while (newSquare === currentSquare);
   return newSquare;
-} 
+}

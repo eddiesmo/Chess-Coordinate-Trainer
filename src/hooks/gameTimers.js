@@ -19,10 +19,13 @@ export function useCountdown(initialCount) {
     }
   }, [count, onComplete]);
 
-  const startCountdown = useCallback(callback => {
-    setCount(initialCount);
-    setOnComplete(() => callback);
-  }, [initialCount]);
+  const startCountdown = useCallback(
+    (callback) => {
+      setCount(initialCount);
+      setOnComplete(() => callback);
+    },
+    [initialCount]
+  );
 
   return [count, startCountdown];
 }
@@ -36,9 +39,9 @@ export function useGameTimer(initialTime, isActive, onTimeUp) {
       onTimeUp();
       return;
     }
-    const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
   }, [timeLeft, isActive, onTimeUp]);
 
   return [timeLeft, setTimeLeft];
-} 
+}

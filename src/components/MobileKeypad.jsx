@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
 function MobileKeypad({ userGuess, setUserGuess, handleSubmitGuess }) {
-  const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
-  const digits = ["1", "2", "3", "4", "5", "6", "7", "8"];
+  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  const digits = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
   const handleKeyPress = (key) => {
     // Allow letters only when nothing is selected.
@@ -38,7 +38,7 @@ function MobileKeypad({ userGuess, setUserGuess, handleSubmitGuess }) {
               key={letter}
               onClick={() => handleKeyPress(letter)}
               disabled={disabled}
-              className={`px-2 py-1 rounded text-white bg-blue-500 ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${isSelected ? "border-2 border-blue-700" : ""}`}
+              className={`px-2 py-1 rounded text-white bg-blue-500 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${isSelected ? 'border-2 border-blue-700' : ''}`}
             >
               {letter.toUpperCase()}
             </button>
@@ -57,7 +57,7 @@ function MobileKeypad({ userGuess, setUserGuess, handleSubmitGuess }) {
               key={digit}
               onClick={() => handleKeyPress(digit)}
               disabled={disabled}
-              className={`px-2 py-1 rounded text-white bg-blue-500 ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${isSelected ? "border-2 border-blue-700" : ""}`}
+              className={`px-2 py-1 rounded text-white bg-blue-500 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${isSelected ? 'border-2 border-blue-700' : ''}`}
             >
               {digit}
             </button>
@@ -68,4 +68,4 @@ function MobileKeypad({ userGuess, setUserGuess, handleSubmitGuess }) {
   );
 }
 
-export default MobileKeypad; 
+export default MobileKeypad;

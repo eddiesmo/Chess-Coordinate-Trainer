@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 export function useCountdown(initialCount, onComplete) {
   const [count, setCount] = useState(null);
@@ -36,4 +36,4 @@ export function useGameTimer(initialTime, isActive, onTimeUp) {
   }, [timeLeft, isActive, onTimeUp]);
 
   return [timeLeft, setTimeLeft];
-} 
+}

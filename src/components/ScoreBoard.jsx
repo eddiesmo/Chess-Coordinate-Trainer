@@ -1,7 +1,7 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { normalizeTime } from "../utils/timeUtils";
-import lightBulbIcon from "../assets/lightbulb_2_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { normalizeTime } from '../utils/timeUtils';
+import lightBulbIcon from '../assets/lightbulb_2_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
 
 function ScoreBoard({
   gameActive,
@@ -30,18 +30,18 @@ function ScoreBoard({
           <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-indigo-600"
-              initial={{ width: "100%" }}
-              animate={{ width: "0%" }}
+              initial={{ width: '100%' }}
+              animate={{ width: '0%' }}
               transition={{
                 duration: Number(customTime),
-                ease: "linear",
+                ease: 'linear',
               }}
             />
           </div>
           <div className="flex items-center space-x-4">
             <p className="text-gray-600">Score: {score}</p>
             <span className="flex items-center">
-              <span className={boardFlipped ? "text-gray-800 font-medium" : "text-gray-600"}>
+              <span className={boardFlipped ? 'text-gray-800 font-medium' : 'text-gray-600'}>
                 {sideLabel}
               </span>
               <button
@@ -77,8 +77,8 @@ function ScoreBoard({
               onClick={toggleBoardFlip}
               className={`px-3 py-1 rounded-2xl w-36 whitespace-nowrap ${
                 boardFlipped
-                  ? "bg-gray-800 text-gray-100 hover:bg-gray-700"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  ? 'bg-gray-800 text-gray-100 hover:bg-gray-700'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
               {sideLabel}
@@ -101,4 +101,4 @@ function ScoreBoard({
   );
 }
 
-export default ScoreBoard; 
+export default ScoreBoard;
