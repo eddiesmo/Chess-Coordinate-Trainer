@@ -1,146 +1,63 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import ScoreBoard from "./components/ScoreBoard";
 import ChessBoard from "./components/ChessBoard";
 import GameControls from "./components/GameControls";
 import GameResults from "./components/GameResults";
 import { squareVariants } from "./constants/squareVariants";
-import { getRandomSquare, filesDefault, ranksDefault, getNewRandomSquare } from "./utils/chessUtils";
-import { useCountdown, useGameTimer } from "./hooks/useGameTimers";
+import { filesDefault, ranksDefault } from "./utils/chessUtils";
+import { useChessGame } from "./hooks/useChessGame";
+import { useCountdown, useGameTimer } from "./hooks/timers";
 import { useAutoFocus } from "./hooks/useAutoFocus";
 import { COUNTDOWN_OVERLAY_STYLE } from "./constants/styles";
 
 export default function ChessSquareGame() {
-  // State declarations
-  const [highlightedSquare, setHighlightedSquare] = useState("");
-  const [userGuess, setUserGuess] = useState("");
-  const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
-  const [gameActive, setGameActive] = useState(false);
-  const [guesses, setGuesses] = useState([]);
-  const [boardFlipped, setBoardFlipped] = useState(false);
-  const [customTime, setCustomTime] = useState("30");
-  const [squareEffects, setSquareEffects] = useState({});
-  const [firstSquareBlinking, setFirstSquareBlinking] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(Number(customTime) || 30);
-  const [showHints, setShowHints] = useState(false);
-  const [hintsUsed, setHintsUsed] = useState(false);
+  const {
+    highlightedSquare,
+    userGuess,
+    setUserGuess,
+    score,
+    highScore,
+    gameActive,
+    guesses,
+    boardFlipped,
+    customTime,
+    setCustomTime,
+    squareEffects,
+    isFirstSquareBlinking,
+    timeLeft,
+    setTimeLeft,
+    showHints,
+    hintsUsed,
+    finalScoreRef,
+    startActualGame,
+    endGame,
+    handleSubmitGuess,
+    toggleBoardFlip,
+    toggleHints,
+    sideLabel,
+    getSquareVariant,
+  } = useChessGame();
 
   const inputRef = useRef(null);
-  const finalScoreRef = useRef(null);
 
-  const endGame = useCallback(() => {
-    setGameActive(false);
-    if (score > highScore) {
-      setHighScore(score);
-    }
-    setTimeout(() => {
-      finalScoreRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }, 100);
-  }, [score, highScore]);
-
-  const startActualGame = useCallback(() => {
-    const time = customTime.trim() === "" ? 30 : Number(customTime);
-    setScore(0);
-    setTimeLeft(time);
-    setGameActive(true);
-    const firstSquare = getRandomSquare();
-    setHighlightedSquare(firstSquare);
-    setUserGuess("");
-    setGuesses([]);
-    setSquareEffects({});
-    setFirstSquareBlinking(true);
-    setHintsUsed(false);
-  }, [customTime]);
-
-  // Initialize countdown hook
+  // Consolidated timer hooks
   const [countdown, startCountdown] = useCountdown(3);
-  
-  // Initialize game timer hook
   useGameTimer(timeLeft, gameActive, endGame, setTimeLeft);
-  
-  // Auto focus management
+
+  // Auto-focus handling stays the same
   useAutoFocus(inputRef, gameActive);
 
-  // Start game function
   const startGame = useCallback(() => {
     startCountdown(startActualGame);
   }, [startCountdown, startActualGame]);
 
-  const handleSubmitGuess = (submittedGuess) => {
-    const guess = typeof submittedGuess === "string" ? submittedGuess : userGuess;
-    if (!gameActive) return;
-    const trimmed = guess.trim().toLowerCase();
-    if (!trimmed) return;
-
-    const isCorrect = trimmed === highlightedSquare;
-    setGuesses((prev) => [
-      ...prev,
-      {
-        square: highlightedSquare,
-        guess: trimmed,
-        isCorrect,
-      },
-    ]);
-
-    if (isCorrect) {
-      setScore((prev) => prev + 1);
-      if (firstSquareBlinking) {
-        setFirstSquareBlinking(false);
-      }
-      setHighlightedSquare(getNewRandomSquare(highlightedSquare));
-    } else {
-      setSquareEffects((prev) => ({
-        ...prev,
-        [highlightedSquare]: "incorrect",
-      }));
-      setTimeout(() => {
-        setSquareEffects((prev) => ({ ...prev, [highlightedSquare]: null }));
-      }, 500);
-    }
-
-    setUserGuess("");
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  };
-
-  const toggleBoardFlip = () => setBoardFlipped((prev) => !prev);
-  const sideLabel = boardFlipped ? "Playing as Black" : "Playing as White";
-
-  // Determine the appropriate square animation variant.
-  const getSquareVariant = (square) => {
-    const isHighlighted = square === highlightedSquare;
-    const effect = squareEffects[square];
-
-    if (isHighlighted && effect === "incorrect") {
-      return "incorrect";
-    } else if (isHighlighted && firstSquareBlinking) {
-      return "firstBlink";
-    } else if (isHighlighted) {
-      return "highlighted";
-    }
-    return "base";
-  };
-
-  // Calculate overlays for rank and file hints matching the board orientation.
+  // Determine overlay hints based on board orientation
   const renderedFilesForOverlay = boardFlipped
     ? [...filesDefault].reverse()
     : filesDefault;
   const renderedRanksForOverlay = boardFlipped
     ? [...ranksDefault]
     : [...ranksDefault].reverse();
-
-  const toggleHints = () => {
-    setShowHints((prev) => {
-      if (!prev) {
-        setHintsUsed(true);
-      }
-      return !prev;
-    });
-  };
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-4 relative">
@@ -151,7 +68,7 @@ export default function ChessSquareGame() {
           How fast can you identify chess squares?
         </p>
       </div>
-
+      
       <ScoreBoard
         gameActive={gameActive}
         timeLeft={timeLeft}
@@ -165,19 +82,19 @@ export default function ChessSquareGame() {
         toggleShowHints={toggleHints}
       />
 
-      {/* Wrap the ChessBoard in a relative container */}
+      {/* ChessBoard with optional rank/file hints */}
       <div className="relative w-full max-w-[30rem] mx-auto">
         <ChessBoard
           boardFlipped={boardFlipped}
           highlightedSquare={highlightedSquare}
           squareEffects={squareEffects}
-          firstSquareBlinking={firstSquareBlinking}
+          firstSquareBlinking={isFirstSquareBlinking}
           squareVariants={squareVariants}
           getSquareVariant={getSquareVariant}
         />
         {showHints && (
           <>
-            {/* File (column) hints along the bottom */}
+            {/* File hints along the bottom */}
             <div className="absolute bottom-[-1rem] left-0 w-full grid grid-cols-8">
               {renderedFilesForOverlay.map((file) => (
                 <span key={file} className="text-center text-xs text-gray-500">
@@ -185,7 +102,7 @@ export default function ChessSquareGame() {
                 </span>
               ))}
             </div>
-            {/* Rank (row) hints along the left side */}
+            {/* Rank hints along the left side */}
             <div className="absolute left-[-1.25rem] top-0 w-[1.5rem] h-full grid grid-rows-8">
               {renderedRanksForOverlay.map((rank) => (
                 <span key={rank} className="text-center text-xs text-gray-500 self-center">
