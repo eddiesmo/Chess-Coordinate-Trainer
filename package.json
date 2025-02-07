@@ -1,17 +1,23 @@
 {
-  "name": "react-javascript",
+  "name": "chess-square-naming-game",
   "version": "1.0.0",
   "type": "module",
-  "description": "React TypeScript on Replit, using Vite bundler",
+  "description": "A fast-paced chess square naming game built with React, Vite, and Tailwind CSS.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
   },
-  "keywords": [],
+  "keywords": [
+    "chess",
+    "game",
+    "react",
+    "vite",
+    "tailwindcss"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",

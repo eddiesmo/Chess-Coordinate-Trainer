@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Check if nvm is installed
 if [ ! -d "$HOME/.nvm" ]; then
@@ -11,6 +12,7 @@ if [ ! -d "$HOME/.nvm" ]; then
 fi
 
 # Use Node.js LTS version
+echo "Installing and using Node.js LTS..."
 nvm install lts/*
 nvm use lts/*
 
@@ -18,7 +20,8 @@ nvm use lts/*
 node -v > .nvmrc
 
 # Clean install dependencies
+echo "Installing dependencies..."
 rm -rf node_modules package-lock.json
 npm install
 
-echo "Setup complete! Run 'npm run dev' to start the development server"
+echo "Setup complete! Run 'npm run dev' to start the development server."
