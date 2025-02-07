@@ -135,10 +135,10 @@ export default function ChessSquareGame() {
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-4 relative">
       {/* Header */}
-      <div className="mb-4 text-center">
-        <h1 className="text-3xl font-bold mb-2">Chess Square Naming Game</h1>
-        <p className="text-gray-600">
-          Identify as many squares as possible before time runs out!
+      <div className="mb-4 text-center max-w-sm sm:max-w-none px-2">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Chess Square Trainer</h1>
+        <p className="text-sm sm:text-base text-gray-600">
+          How fast can you identify chess squares?
         </p>
       </div>
 
