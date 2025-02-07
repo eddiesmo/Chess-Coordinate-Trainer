@@ -58,7 +58,7 @@ export default function ChessSquareGame() {
   const [gameActive, setGameActive] = useState(false);
   const [guesses, setGuesses] = useState([]);
   const [boardFlipped, setBoardFlipped] = useState(false);
-  const [customTime, setCustomTime] = useState(30);
+  const [customTime, setCustomTime] = useState("30");
 
   // We'll track per-square blink effects: 'incorrect' | null.
   const [squareEffects, setSquareEffects] = useState({});
@@ -77,15 +77,20 @@ export default function ChessSquareGame() {
   }, []);
 
   const startGame = () => {
+    // If customTime is empty, use the default of 30 seconds.
+    const time = customTime.trim() === "" ? 30 : Number(customTime);
+    // If it's empty, update the input state back to "30".
+    if (customTime.trim() === "") {
+      setCustomTime("30");
+    }
     setScore(0);
-    setTimeLeft(customTime);
+    setTimeLeft(time);
     setGameActive(true);
-    const firstSquare = getRandomSquare();
+    let firstSquare = getRandomSquare();
     setHighlightedSquare(firstSquare);
     setUserGuess("");
     setGuesses([]);
     setSquareEffects({});
-    // Start the first square blinking.
     setFirstSquareBlinking(true);
   };
 
@@ -206,7 +211,12 @@ export default function ChessSquareGame() {
           <input
             type="number"
             value={customTime}
-            onChange={(e) => setCustomTime(Number(e.target.value))}
+            onChange={(e) => setCustomTime(e.target.value)}
+            onBlur={() => {
+              if (customTime.trim() === "") {
+                setCustomTime("30");
+              }
+            }}
             className="border px-2 py-1 rounded-md w-20"
             min={5}
             max={600}
