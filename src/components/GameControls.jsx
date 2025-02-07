@@ -3,6 +3,7 @@ import MobileKeypad from "./MobileKeypad";
 
 function GameControls({
   gameActive,
+  countdown,
   userGuess,
   setUserGuess,
   handleSubmitGuess,
@@ -24,9 +25,16 @@ function GameControls({
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
+  // In desktop mode, if a countdown is active, automatically focus the text field.
+  useEffect(() => {
+    if (!isMobile && countdown !== null && inputRef && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [countdown, isMobile, inputRef]);
+
   return (
     <div className="w-full max-w-md mt-4 min-h-[120px]">
-      {gameActive ? (
+      {(gameActive || countdown !== null) ? (
         <div className="flex flex-col items-center">
           {!isMobile ? (
             <div className="flex justify-center">

@@ -23,10 +23,14 @@ export default function ChessSquareGame() {
   // Whether we are still on the first square (to show continuous blinking).
   const [firstSquareBlinking, setFirstSquareBlinking] = useState(false);
 
+  // New state for countdown (null when not counting down)
+  const [countdown, setCountdown] = useState(null);
+
   const inputRef = useRef(null);
   const finalScoreRef = useRef(null);
 
-  const startGame = () => {
+  // Function that contains the actual game-start logic
+  const startActualGame = () => {
     const time = customTime.trim() === "" ? 30 : Number(customTime);
     if (customTime.trim() === "") {
       setCustomTime("30");
@@ -40,6 +44,11 @@ export default function ChessSquareGame() {
     setGuesses([]);
     setSquareEffects({});
     setFirstSquareBlinking(true);
+  };
+
+  // Modified startGame that initiates the countdown.
+  const startGame = () => {
+    setCountdown(3);
   };
 
   const endGame = () => {
@@ -98,6 +107,23 @@ export default function ChessSquareGame() {
     }
   };
 
+  // Countdown effect: update each second and start the game when countdown reaches 1.
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown > 1) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (countdown === 1) {
+      const timer = setTimeout(() => {
+        startActualGame();
+        setCountdown(null);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
   useEffect(() => {
     if (!gameActive) return;
     if (timeLeft <= 0) {
@@ -155,17 +181,36 @@ export default function ChessSquareGame() {
         toggleBoardFlip={toggleBoardFlip}
       />
 
-      <ChessBoard
-        boardFlipped={boardFlipped}
-        highlightedSquare={highlightedSquare}
-        squareEffects={squareEffects}
-        firstSquareBlinking={firstSquareBlinking}
-        squareVariants={squareVariants}
-        getSquareVariant={getSquareVariant}
-      />
+      {/* Wrap the ChessBoard in a relative container */}
+      <div className="relative w-full max-w-[30rem] mx-auto">
+        <ChessBoard
+          boardFlipped={boardFlipped}
+          highlightedSquare={highlightedSquare}
+          squareEffects={squareEffects}
+          firstSquareBlinking={firstSquareBlinking}
+          squareVariants={squareVariants}
+          getSquareVariant={getSquareVariant}
+        />
+        {countdown !== null && (
+          <div
+            className="absolute z-10 flex items-center justify-center rounded-lg bg-white bg-opacity-60 backdrop-blur-sm"
+            style={{
+              width: "calc((100% / 8) * 2)",
+              height: "calc((100% / 8) * 2)",
+              top: "calc(50% - (100% / 8))",
+              left: "calc(50% - (100% / 8))"
+            }}
+          >
+            <div className="text-6xl font-bold text-gray-800">
+              {countdown}
+            </div>
+          </div>
+        )}
+      </div>
 
       <GameControls
         gameActive={gameActive}
+        countdown={countdown}
         userGuess={userGuess}
         setUserGuess={setUserGuess}
         handleSubmitGuess={handleSubmitGuess}

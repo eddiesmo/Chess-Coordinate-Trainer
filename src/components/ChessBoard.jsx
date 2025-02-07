@@ -14,7 +14,7 @@ function ChessBoard({
   const renderedFiles = boardFlipped ? [...filesDefault].reverse() : filesDefault;
 
   return (
-    <div className="w-[80%] max-w-[80%] sm:w-full sm:max-w-[30rem] grid grid-cols-8 gap-1">
+    <div className="w-full sm:max-w-[30rem] mx-auto grid grid-cols-8 gap-1">
       {renderedRanks.map((rank, rankIndex) => (
         <React.Fragment key={rank}>
           {renderedFiles.map((file) => {
