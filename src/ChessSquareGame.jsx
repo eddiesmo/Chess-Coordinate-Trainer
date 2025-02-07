@@ -6,54 +6,6 @@ import GameResults from "./components/GameResults";
 import { squareVariants } from "./constants/squareVariants";
 import { getRandomSquare } from "./utils/chessUtils";
 
-/**
- * Now we want the "first presented square" to blink continuously until guessed correctly.
- * We'll track a boolean that indicates we're still on the first square.
- * Then we define a "firstBlink" variant that repeats indefinitely.
- * Once the user guesses the first square correctly, we stop the blinking.
- */
-
-const filesDefault = ["a", "b", "c", "d", "e", "f", "g", "h"];
-const ranksDefault = ["1", "2", "3", "4", "5", "6", "7", "8"];
-
-const squareVariants = {
-  base: {
-    scale: 1,
-    boxShadow: "none",
-    transition: { duration: 0 },
-  },
-  highlighted: {
-    scale: 1,
-    boxShadow: "0 0 0 4px #facc15",
-    transition: { duration: 0 },
-  },
-  incorrect: {
-    scale: [1, 1.2, 1],
-    boxShadow: [
-      "0 0 0 4px #facc15", // yellow
-      "0 0 0 4px #f87171", // red
-      "0 0 0 4px #facc15", // back to yellow
-    ],
-    transition: {
-      duration: 0.5,
-    },
-  },
-  firstBlink: {
-    scale: [1, 1.05, 1],
-    // We'll maintain the yellow ring plus a slight pulsation.
-    boxShadow: [
-      "0 0 0 4px #facc15", // highlight ring at start
-      "0 0 0 4px #fde047", // slightly brighter yellow
-      "0 0 0 4px #facc15", // return to original yellow
-    ],
-    transition: {
-      duration: 0.8,
-      repeat: Infinity,
-      repeatType: "reverse",
-    },
-  },
-};
-
 export default function ChessSquareGame() {
   const [highlightedSquare, setHighlightedSquare] = useState("");
   const [userGuess, setUserGuess] = useState("");
