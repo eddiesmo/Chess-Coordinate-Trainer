@@ -22,6 +22,7 @@ export default function ChessSquareGame() {
   const [firstSquareBlinking, setFirstSquareBlinking] = useState(false);
   const [timeLeft, setTimeLeft] = useState(Number(customTime) || 30);
   const [showHints, setShowHints] = useState(false);
+  const [hintsUsed, setHintsUsed] = useState(false);
 
   const inputRef = useRef(null);
   const finalScoreRef = useRef(null);
@@ -50,6 +51,7 @@ export default function ChessSquareGame() {
     setGuesses([]);
     setSquareEffects({});
     setFirstSquareBlinking(true);
+    setHintsUsed(false);
   }, [customTime]);
 
   // Initialize countdown hook
@@ -67,7 +69,6 @@ export default function ChessSquareGame() {
   }, [startCountdown, startActualGame]);
 
   const handleSubmitGuess = (submittedGuess) => {
-    // Use the passed guess if available; otherwise, fall back to current state.
     const guess = typeof submittedGuess === "string" ? submittedGuess : userGuess;
     if (!gameActive) return;
     const trimmed = guess.trim().toLowerCase();
@@ -135,6 +136,15 @@ export default function ChessSquareGame() {
     ? [...ranksDefault]
     : [...ranksDefault].reverse();
 
+  const toggleHints = () => {
+    setShowHints((prev) => {
+      if (!prev) {
+        setHintsUsed(true);
+      }
+      return !prev;
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-4 relative">
       {/* Header */}
@@ -155,7 +165,7 @@ export default function ChessSquareGame() {
         setCustomTime={setCustomTime}
         toggleBoardFlip={toggleBoardFlip}
         showHints={showHints}
-        toggleShowHints={() => setShowHints((prev) => !prev)}
+        toggleShowHints={toggleHints}
       />
 
       {/* Wrap the ChessBoard in a relative container */}
@@ -216,6 +226,7 @@ export default function ChessSquareGame() {
         guesses={guesses}
         score={score}
         highScore={highScore}
+        hintsUsed={hintsUsed}
       />
 
       {!gameActive && guesses.length > 0 && (
