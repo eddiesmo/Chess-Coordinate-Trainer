@@ -41,25 +41,8 @@ export default function ChessSquareGame() {
 
   const inputRef = useRef(null);
 
-  // Consolidated timer hooks
-  const [countdown, startCountdown] = useCountdown(3);
-  useGameTimer(timeLeft, gameActive, handleGameEnd, setTimeLeft);
-
-  // Auto-focus handling stays the same
-  useAutoFocus(inputRef, gameActive);
-
+  // Move Google Analytics hook and handleGameEnd before using useGameTimer
   const { sendEvent } = useGoogleAnalytics();
-
-  const startGame = useCallback(() => {
-    startCountdown(() => {
-      startActualGame();
-      sendEvent('game_started', { 
-        customTime,
-        boardFlipped,
-        hintsEnabled: showHints 
-      });
-    });
-  }, [startCountdown, startActualGame, customTime, boardFlipped, showHints]);
 
   const handleGameEnd = useCallback(() => {
     endGame();
@@ -71,12 +54,30 @@ export default function ChessSquareGame() {
     });
   }, [endGame, score, customTime, timeLeft, hintsUsed, guesses.length]);
 
+  // Consolidated timer hooks
+  const [countdown, startCountdown] = useCountdown(3);
+  useGameTimer(timeLeft, gameActive, handleGameEnd, setTimeLeft);
+
+  // Auto-focus handling stays the same
+  useAutoFocus(inputRef, gameActive);
+
+  const startGame = useCallback(() => {
+    startCountdown(() => {
+      startActualGame();
+      sendEvent('game_started', { 
+        customTime,
+        boardFlipped,
+        hintsEnabled: showHints 
+      });
+    });
+  }, [startCountdown, startActualGame, customTime, boardFlipped, showHints, sendEvent]);
+
   const handleBoardFlip = useCallback(() => {
     toggleBoardFlip();
     sendEvent('board_flipped', { 
       duringGame: gameActive 
     });
-  }, [toggleBoardFlip, gameActive]);
+  }, [toggleBoardFlip, gameActive, sendEvent]);
 
   const handleHintsToggle = useCallback(() => {
     toggleHints();
@@ -84,7 +85,7 @@ export default function ChessSquareGame() {
       hintsEnabled: !showHints,
       duringGame: gameActive
     });
-  }, [toggleHints, showHints, gameActive]);
+  }, [toggleHints, showHints, gameActive, sendEvent]);
 
   const handleGuessSubmit = useCallback((guess) => {
     const result = handleSubmitGuess(guess);
@@ -96,7 +97,7 @@ export default function ChessSquareGame() {
         timeRemaining: timeLeft
       });
     }
-  }, [handleSubmitGuess, timeLeft]);
+  }, [handleSubmitGuess, timeLeft, sendEvent]);
 
   // Determine overlay hints based on board orientation
   const renderedFilesForOverlay = boardFlipped ? [...filesDefault].reverse() : filesDefault;
