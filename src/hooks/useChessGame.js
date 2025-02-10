@@ -15,6 +15,7 @@ export function useChessGame() {
   const [timeLeft, setTimeLeft] = useState(Number(customTime) || 30);
   const [showHints, setShowHints] = useState(false);
   const [hintsUsed, setHintsUsed] = useState(false);
+  const [hintsUsedThisGame, setHintsUsedThisGame] = useState(false);
 
   const finalScoreRef = useRef(null);
 
@@ -29,8 +30,8 @@ export function useChessGame() {
     setGuesses([]);
     setSquareEffects({});
     setIsFirstSquareBlinking(true);
-    setHintsUsed(false);
-  }, [customTime]);
+    setHintsUsedThisGame(showHints);
+  }, [customTime, showHints]);
 
   const endGame = useCallback(() => {
     setGameActive(false);
@@ -81,12 +82,13 @@ export function useChessGame() {
 
   const toggleHints = useCallback(() => {
     setShowHints((prev) => {
-      if (!prev) {
-        setHintsUsed(true);
+      const newValue = !prev;
+      if (newValue && gameActive) {
+        setHintsUsedThisGame(true);
       }
-      return !prev;
+      return newValue;
     });
-  }, []);
+  }, [gameActive]);
 
   const sideLabel = boardFlipped ? 'Playing as Black' : 'Playing as White';
 
@@ -122,7 +124,7 @@ export function useChessGame() {
     timeLeft,
     setTimeLeft,
     showHints,
-    hintsUsed,
+    hintsUsed: hintsUsedThisGame,
     finalScoreRef,
     startActualGame,
     endGame,
