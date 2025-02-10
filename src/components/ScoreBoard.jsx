@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import { motion, useAnimation } from 'framer-motion';
 import { normalizeTime } from '../utils/timeUtils';
 import lightBulbIcon from '../assets/lightbulb_2_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
 
@@ -15,6 +15,28 @@ function ScoreBoard({
   showHints,
   toggleShowHints,
 }) {
+  const progressControls = useAnimation();
+  const startTimeRef = useRef(null);
+
+  useEffect(() => {
+    if (gameActive && !startTimeRef.current) {
+      startTimeRef.current = Date.now();
+      progressControls.set({ width: '100%' });
+      progressControls.start({
+        width: '0%',
+        transition: {
+          duration: Number(customTime),
+          ease: 'linear',
+        },
+      });
+    }
+
+    if (!gameActive) {
+      startTimeRef.current = null;
+      progressControls.stop();
+    }
+  }, [gameActive, customTime, progressControls]);
+
   return (
     <div className="mb-4 text-center min-h-[80px] flex items-center justify-center">
       {gameActive ? (
@@ -30,12 +52,7 @@ function ScoreBoard({
           <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-indigo-600"
-              initial={{ width: '100%' }}
-              animate={{ width: '0%' }}
-              transition={{
-                duration: Number(customTime),
-                ease: 'linear',
-              }}
+              animate={progressControls}
             />
           </div>
           <div className="flex items-center space-x-4">
