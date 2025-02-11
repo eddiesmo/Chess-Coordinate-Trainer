@@ -22,14 +22,11 @@ A fast-paced memory challenge where you must quickly identify and type the corre
 5. Play until time runs out and see your **final score**!
 
 ## 📦 Installation & Running
-### **Replit (Recommended)**
-- Fork the game in Replit and press **Run**. https://replit.com/@eddiesmo/Name-The-Chess-Square?v=1
-
 ### **Local Setup**
 (Never tested - written by AI)
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/chess-square-game.git
+   git clone https://github.com/eddiesmo/chess-coordinate-trainer.git
    cd chess-square-game
    ```
 2. Install dependencies:
