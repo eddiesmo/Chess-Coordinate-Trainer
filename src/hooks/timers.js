@@ -7,13 +7,13 @@ export function useCountdown(initialCount) {
   useEffect(() => {
     if (count === null || !onComplete) return;
     if (count > 1) {
-      const timer = setTimeout(() => setCount(count - 1), 1000);
+      const timer = setTimeout(() => setCount(count - 1), 750);
       return () => clearTimeout(timer);
     } else if (count === 1) {
       const timer = setTimeout(() => {
         onComplete();
         setCount(null);
-      }, 1000);
+      }, 750);
       return () => clearTimeout(timer);
     }
   }, [count, onComplete]);
