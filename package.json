@@ -1,5 +1,5 @@
 {
-  "name": "chess-square-naming-game",
+  "name": "chess-square-trainer",
   "version": "1.0.0",
   "type": "module",
   "description": "A fast-paced chess square naming game built with React, Vite, and Tailwind CSS.",

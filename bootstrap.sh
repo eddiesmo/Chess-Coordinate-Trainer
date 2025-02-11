@@ -1,14 +1,15 @@
 #!/bin/bash
-set -e
 
-# Check if nvm is installed
-if [ ! -d "$HOME/.nvm" ]; then
-    echo "Installing nvm..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    
-    # Load nvm
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# Set the NVM directory; adjust if your nvm is installed elsewhere.
+export NVM_DIR="$HOME/.nvm"
+
+# Source nvm if the script exists.
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  # This loads nvm
+  . "$NVM_DIR/nvm.sh"
+else
+  echo "nvm script not found in $NVM_DIR"
+  exit 1
 fi
 
 # Use Node.js LTS version
