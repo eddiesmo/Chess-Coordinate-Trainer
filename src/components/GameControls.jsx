@@ -22,6 +22,27 @@ function GameControls({
   // Replace the existing focus effect with useAutoFocus
   useAutoFocus(inputRef, !isMobile && countdown !== null);
 
+  // Handle input changes with auto-submit
+  const handleInputChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    
+    // First update the input value
+    setUserGuess(value);
+    
+    // Then check if it's a valid chess square and submit
+    if (/^[a-h][1-8]$/.test(value)) {
+      // Use the current value directly instead of relying on state
+      handleSubmitGuess(value);
+    }
+  };
+
+  // Add back the Enter key handler as a fallback
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && /^[a-h][1-8]$/.test(userGuess)) {
+      handleSubmitGuess(userGuess);
+    }
+  };
+
   return (
     <div className="w-full max-w-md mt-4 min-h-[120px]">
       {gameActive || countdown !== null ? (
@@ -36,12 +57,9 @@ function GameControls({
                 className="border px-2 py-1 rounded-md"
                 placeholder="Enter square e.g. e4"
                 value={userGuess}
-                onChange={(e) => setUserGuess(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSubmitGuess();
-                  }
-                }}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                maxLength={2}
               />
             </div>
           ) : (
