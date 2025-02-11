@@ -1,4 +1,4 @@
-# Chess Square Trainer
+# Chess Coordinate Trainer
 
 ### 🚀 Test Your Chessboard Knowledge & Speed!
 A fast-paced memory challenge where you must quickly identify and type the correct chess square notation for a highlighted square. Get it right, and the next square appears instantly—how many can you get before time runs out?
