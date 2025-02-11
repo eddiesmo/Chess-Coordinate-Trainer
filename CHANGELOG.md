@@ -4,6 +4,7 @@ This document records all notable updates to the repository.
 
 ## 2025-02-11
 - **Added:** Changelog to track project updates
+- **Improved:** Removed the gap and rounded corners from the chess board styling
 - **Improved:** Desktop input now auto-submits valid squares without requiring Enter key
 - **Fixed:** Countdown timer speed increased for better user experience
 - **Fixed:** Progress bar synchronization when making multiple guesses

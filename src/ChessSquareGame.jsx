@@ -160,7 +160,7 @@ export default function ChessSquareGame() {
         )}
         {countdown !== null && (
           <div
-            className="absolute z-10 flex items-center justify-center rounded-lg bg-white bg-opacity-60 backdrop-blur-sm"
+            className="absolute z-10 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm"
             style={COUNTDOWN_OVERLAY_STYLE}
           >
             <div className="text-6xl font-bold text-gray-800">{countdown}</div>
