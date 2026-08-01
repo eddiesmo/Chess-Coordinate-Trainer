@@ -5,13 +5,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
+    // Exposed on the LAN so the mobile keypad path can be tested on a real phone.
     host: "0.0.0.0",
-    allowedHosts: [
-      "ec65bcff-2c4f-4a35-a914-3590af0d5464-00-2n1ylc803f741.sisko.replit.dev",
-      ".replit.dev"
-    ]
-  },
-  css: {
-    postcss: "./postcss.config.js",
   },
 });

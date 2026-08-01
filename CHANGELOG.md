@@ -2,6 +2,13 @@
 
 This document records all notable updates to the repository.
 
+## 2026-08-02
+- **Changed:** Migrated hosting from Replit to GitHub Pages, served from the same
+  `chess-square-trainer.eddiesmo.com` domain. Replit's free tier is ending.
+- **Added:** GitHub Actions workflow that builds and deploys on every push to `main`
+- **Added:** CLAUDE.md with architecture notes for AI coding assistants
+- **Removed:** Replit-specific `allowedHosts` from the Vite dev server config
+
 ## 2025-02-11
 - **Added:** Changelog to track project updates
 - **Improved:** Removed the gap and rounded corners from the chess board styling
